@@ -1,5 +1,5 @@
 import numpy as np
-
+from decimal import *
 
 def stationary_distribution(omega, theta, eps):
     while np.linalg.norm(omega.dot(theta) - omega) > eps:
@@ -49,7 +49,7 @@ p_m = np.zeros((N+1,L))
 # м.о. числа требований в системах
 s = np.zeros(L)
 # м.о. числа занятых приборов в системах
-h = np.zeros(L)
+h = np.zeros(L, dtype=Decimal)
 # интенсивности входного потока требований в системах
 lmbds = np.zeros(L)
 # м.о. длительности пребывания требований в системах
@@ -66,10 +66,13 @@ for i in range(N + 1):
 for i in range(L):
     for j in range(1, N + 1):
         s[i] += x[i]**j * (G[N-j][L-1] / G[N][L-1])
-    h[i] = x[i] * (G[N-1][L-1] / G[N][L-1])
+    getcontext().prec = 50
+    h[i] = Decimal(x[i]) * (Decimal(G[N-1][L-1]) / Decimal(G[N][L-1]))
     lmbds[i] = h[i] * mu[i]
     u[i] = s[i] / lmbds[i]
-
+print(lmbds)
+print(G)
+print(type(h[-1]))
 # математическое ожидание длительности пребывания требований в системах обслуживания
 print('\n\nМ.о. длительности пребывания требований в системах:\n')
 for i in range(L):
