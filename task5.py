@@ -3,6 +3,23 @@
 import numpy as np
 
 
+def get_prod(k, lambda_, mu, N):
+    tmp = 1
+    for l in range(k):
+        tmp *= lambda_[N - l] / mu[l + 1]
+    return tmp
+
+def get_p_0(lambda_, mu, N):
+    return (1 + sum([get_prod(k, lambda_, mu) for k in range(N)])) ** (-1)
+
+def get_p(k, lambda_, mu, N):
+    return get_prod(k, lambda_, mu) * get_p_0(lambda_, mu, N)
+
+def get_tau(N, mu, p):
+    tmp1 = sum([p[k - 1] * k for k in range(1, N + 1)])
+    tmp2 = sum([p[k - 1] * mu[k - 1] for k in range(1, N + 1)])
+    return tmp1 / tmp2
+
 def get_rho(k, c, mu):
     tmp = 1
     for l in range(k):
@@ -10,7 +27,8 @@ def get_rho(k, c, mu):
     return tmp
 
 def get_lambda_6(k, L, N, c, mu, T):
-    # 2 <= L <= N — число пакетов
+    # 2 <= L <= N — число пакетов?
+    # mu_L — что за зверь?
     if N - L + 2 <= k <= N:
         ans = c
     elif 1 <= k <= N - L:
@@ -37,8 +55,3 @@ theta = np.array([
 mu = [1, 1, 1, 1, 1]
 T = 4
 
-mu = [2, 1, 1, 2, 1]
-T = 5
-
-mu = [2, 1, 2, 2, 2]
-T = 3
